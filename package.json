@@ -1,0 +1,17 @@
+{
+  "name": "dude.js",
+  "version": "0.0.0",
+  "description": "NodeJS's little helper",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/co2-git/dude.git"
+  },
+  "author": "francoisr <francoisrvespa@gmail.com>",
+  "license": "BSD",
+  "readmeFilename": "README.md",
+  "gitHead": "ed41fa5308a0823aae901d14e28d2654583c48c6"
+}
