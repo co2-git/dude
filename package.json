@@ -6,6 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "bin": {
+    "dude": "bin/dude.js"
+  },
   "repository": {
     "type": "git",
     "url": "git://github.com/co2-git/dude.git"
@@ -13,5 +16,8 @@
   "author": "francoisr <francoisrvespa@gmail.com>",
   "license": "BSD",
   "readmeFilename": "README.md",
-  "gitHead": "ed41fa5308a0823aae901d14e28d2654583c48c6"
+  "gitHead": "ed41fa5308a0823aae901d14e28d2654583c48c6",
+  "dependencies": {
+    "commander": "~2.2.0"
+  }
 }
