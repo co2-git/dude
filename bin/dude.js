@@ -1,3 +1,21 @@
 #!/usr/bin/node
 
-console.log('hola');
+var $ = require;
+
+var domain = $('domain').create();
+
+domain.on('error', function (error) {
+  console.log('error', error.stack);
+});
+
+domain.run(function () {
+  var program = $('commander');
+
+  var package = $('../package.json');
+
+  program
+    .version(package.version)
+    .parse(process.argv);
+
+  
+});
