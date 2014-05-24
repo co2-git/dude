@@ -34,9 +34,27 @@ domain.run(function () {
     console.log('');
   });
 
-  program.on('install', function (dependency) {
-    $('../lib/install/' + dependency)(domain.intercept(function () {
-      
+  program.on('install', function (dependency, version) {
+    var list = $('../list.json');
+
+    var Dependency;
+
+    list.forEach(function (dep) {
+      if ( dep.slug === dependency ) {
+        Dependency = dep;
+      }
+    });
+
+    if ( ! version ) {
+      version = Dependency.latest;
+    }
+
+    if ( ! Dependency ) {
+      return console.log('No such dependency'.red, ('Dependency not found: ' + dependency).yellow);
+    }
+
+    $('../lib/install/' + dependency)(version, domain.intercept(function (version, dir) {
+      console.log(('  Successfully installed ' + dependency.bold + ' version ' + version.bold).green);
     }));
   });
 
