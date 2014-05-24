@@ -18,6 +18,7 @@
   "readmeFilename": "README.md",
   "gitHead": "ed41fa5308a0823aae901d14e28d2654583c48c6",
   "dependencies": {
-    "commander": "~2.2.0"
+    "commander": "~2.2.0",
+    "colors": "~0.6.2"
   }
 }
