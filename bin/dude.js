@@ -15,7 +15,8 @@ domain.run(function () {
 
   program
     .version(package.version)
+    .option('install', 'Install new dependency')
     .parse(process.argv);
 
-  
+
 });
