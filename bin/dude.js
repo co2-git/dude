@@ -157,7 +157,22 @@ domain.run(function () {
 
           console.log('    ' + 'log:'.grey, item.log.magenta,
             'started:'.grey, $('moment')(item.started).fromNow().magenta);
+
+          if ( item.zombie ) {
+            console.log('    ' + 'ZOMBIE ALERT'.red.bold, 'It seems this service died unexpectedly'.yellow);
+          }
         });
+      }));
+    });
+
+
+
+  program
+    .command('stop <service>')
+    .description('Stop a service or a script')
+    .action(function (service) {
+      $('../lib/stop')(service, domain.intercept(function (message) {
+        console.log((service + ' has been stopped').green);
       }));
     });
 
