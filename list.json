@@ -6,17 +6,6 @@
     "tags": ["mongodb", "mongo", "database", "db", "nosql", "json", "document", "opensource"],
     "latest": "2.6.1",
     "versions": ["2.6.1"],
-    "arguments": {
-      "dbpath": {
-        "about": "Path to the database",
-        "required": false
-      },
-      "port": {
-        "about": "Port to listen to",
-        "required": false
-      }
-    },
-    "arguments-transform": "object to long options",
     "install": {
       "2.6.1": {
         "source": "http://fastdl.mongodb.org/{{os.type}}/mongodb-{{os.type}}-{{os.arch}}-{{dependency.version}}.tgz",
@@ -30,11 +19,18 @@
           "match": "/waiting for connections on port/"
         }
       },
-      "arguments-style": {}
-    },
-    "status": {
-      "type": "pid-file",
-      "pid-file": "{{db.path}}/mongod.lock"
+      "arguments-style": {},
+      "arguments": {
+        "dbpath": {
+          "about": "Path to the database",
+          "required": false
+        },
+        "port": {
+          "about": "Port to listen to",
+          "required": false
+        }
+      },
+      "arguments-transform": "object to long options"
     }
   }
 ]
