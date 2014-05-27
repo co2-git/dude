@@ -29,5 +29,27 @@
         "arguments-transform": "object to long options"
       }
     }
+  },
+
+  {
+    "name": "Dude JS Test Service",
+    "slug": "dude-test-service",
+    "about": "This is a vanilla app used by dudejs to perform test",
+    "tags": ["dudejs", "test"],
+    "latest": "0.0.0",
+    "versions": ["0.0.0"],
+    "install": {
+      "0.0.0": {
+        "source": "https://github.com/co2-git/dude-test-service/archive/v{{dependency.version}}.tar.gz",
+        "extension": "tar.gz"
+      }
+    },
+    "start": {
+      "0.0.0": {
+        "script": "bin/start.js",
+        "arguments-style": {},
+        "arguments": {}
+      }
+    }
   }
 ]
