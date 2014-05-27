@@ -13,24 +13,21 @@
       }
     },
     "start": {
-      "script": "bin/mongod",
-      "listening": {
-        "stdout": {
-          "match": "/waiting for connections on port/"
-        }
-      },
-      "arguments-style": {},
-      "arguments": {
-        "dbpath": {
-          "about": "Path to the database",
-          "required": false
+      "2.6.1": {
+        "script": "bin/mongod",
+        "arguments-style": {},
+        "arguments": {
+          "dbpath": {
+            "about": "Path to the database",
+            "required": false
+          },
+          "port": {
+            "about": "Port to listen to",
+            "required": false
+          }
         },
-        "port": {
-          "about": "Port to listen to",
-          "required": false
-        }
-      },
-      "arguments-transform": "object to long options"
+        "arguments-transform": "object to long options"
+      }
     }
   }
 ]
