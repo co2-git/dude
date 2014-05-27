@@ -54,8 +54,10 @@ domain.run(function () {
     .command('installed')
     .description('List installed dude dependencies')
     .action(function () {
+      var list;
+
       try {
-        var list = $($('path').join(process.env.PWD, 'dude.json'));
+        list = $($('path').join(process.env.PWD, 'dude.json'));
       }
       catch ( error ) {
         return console.log('  Nothing installed yet!'.yellow);
@@ -83,7 +85,7 @@ domain.run(function () {
   program
     .command('install <dependency>')
     .description('Install a new dependency')
-    .action(function (dependency, version) {
+    .action(function (dependency) {
       var list = $('../list.json');
 
       var Dependency;
@@ -98,9 +100,7 @@ domain.run(function () {
         return console.log('No such dependency'.red, ('Dependency not found: ' + dependency).yellow);
       }
 
-      if ( ! version ) {
-        version = Dependency.latest;
-      }
+      var version = Dependency.latest;
 
       $('../lib/install')(dependency, version, domain.intercept(function (version, dir) {
         console.log(('  Successfully installed ' + dependency.bold + ' version ' + version.bold).green);

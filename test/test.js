@@ -186,31 +186,31 @@ domain.run(function () {
                   throw new TypeError('Missing arguments style declaration for start how-to ' + startVersion + ' for dependency ' + dep.name);
                 }
 
-                // If arguments style is object, there must be an arguments transform declaration
-                if ( dep.start[startVersion]['arguments-style'].constructor === Object ) {
+                // If arguments style is object and has arguments, there must be an arguments transform declaration
+                if ( dep.start[startVersion]['arguments-style'].constructor === Object && Object.keys(dep.start[startVersion]['arguments-style']).length ) {
                   if ( typeof dep.start[startVersion]['arguments-transform'] !== 'string'  ) {
-                    throw new Error('For dependency ' + dependency.name + ', in start how-to semver ' + startVersion + ', since arguments style is an object, there should be an arguments transform declaration');
+                    throw new Error('For dependency ' + dep.name + ', in start how-to semver ' + startVersion + ', since arguments style is an object, there should be an arguments transform declaration');
                   }
 
                   if ( ['object to long options'].indexOf(dep.start[startVersion]['arguments-transform']) < 0 ) {
-                    throw new Error('Unknown arguments transform declaration for start candidate ' + startVersion + ' for dependency ' + dependency.name);
+                    throw new Error('Unknown arguments transform declaration for start candidate ' + startVersion + ' for dependency ' + dep.name);
                   }
                 }
 
                 // There should be an arguments object
                 if ( typeof dep.start[startVersion].arguments !== 'object' || dep.start[startVersion].arguments.constructor !== Object ) {
-                  throw new Error('Missing arguments declaration (even empty) for start candidate ' + startVersion + ' of dependency ' + dependency.name);
+                  throw new Error('Missing arguments declaration (even empty) for start candidate ' + startVersion + ' of dependency ' + dep.name);
                 }
 
                 // If arguments not empty, checking them
                 if ( Object.keys(dep.start[startVersion].arguments).length ) {
                   for ( var arg in dep.start[startVersion].arguments ) {
                     if ( typeof dep.start[startVersion].arguments[arg].about !== 'string' ) {
-                      throw new Error('Missing about for argument ' + arg + ' in start how-to for versions ' + startVersion + ' for dependency ' + dependency.name);
+                      throw new Error('Missing about for argument ' + arg + ' in start how-to for versions ' + startVersion + ' for dependency ' + dep.name);
                     }
 
                     if ( typeof dep.start[startVersion].arguments[arg].required !== 'boolean' ) {
-                      throw new Error('Missing required for argument ' + arg + ' in start how-to for versions ' + startVersion + ' for dependency ' + dependency.name);
+                      throw new Error('Missing required for argument ' + arg + ' in start how-to for versions ' + startVersion + ' for dependency ' + dep.name);
                     }
                   }
                 }
@@ -222,6 +222,60 @@ domain.run(function () {
           }
 
           callback();
+        },
+
+
+
+        'Installing dude-test-service': function (callback) {
+          $('../lib/install')('dude-test-service', 'latest', function (error, version) {
+            if ( error ) {
+              return callback(error);
+            }
+
+            var list = $('../list.json');
+
+            var Test;
+
+            list.forEach(function (dep) {
+              if ( dep.slug === 'dude-test-service' ) {
+                Test = dep;
+              }
+            });
+
+            if ( ! Test ) {
+              return callback(new Error('dude-test-service not found in list'));
+            }
+
+            if ( version !== Test.latest ) {
+              return callback(new Error('Version mismatch, was expecting ' + Test.latest + ', got ' + version));
+            }
+
+            var parallelChecks = [];
+
+            parallelChecks.push(function (then) {
+              $('fs').stat($('path').join(dir, 'dude-js', 'dependencies', 'dude-test-service'), then);
+            });
+
+            parallelChecks.push(function (then) {
+              $('fs').stat($('path').join(dir, 'dude-js', 'dependencies', 'dude-test-service', 'dude-test-service-' + version), then);
+            });
+
+            parallelChecks.push(function (then) {
+              $('fs').stat($('path').join(dir, 'dude-js', 'dependencies', 'dude-test-service', 'dude-test-service-' + version, 'bin'), then);
+            });
+
+            parallelChecks.push(function (then) {
+              var json = $($('path').join(dir, 'dude.json'));
+
+              if ( json.dependencies['dude-test-service'] !== version ) {
+                callback(new Error('Install did not update dude.json correctly'));
+              }
+
+              callback();
+            });
+
+            $('async').parallel(parallelChecks, callback);
+          });
         }
       }
     }, domain.intercept(function () {
