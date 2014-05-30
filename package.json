@@ -1,6 +1,6 @@
 {
   "name": "dude.js",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "NodeJS's little helper",
   "main": "index.js",
   "scripts": {

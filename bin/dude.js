@@ -113,34 +113,42 @@ domain.run(function () {
     .description('Start a service or a script. Options can be passed like this option=value, or just value')
     .action(function (service) {
 
-      var list = $('../list.json');
+      var options = {};
 
-      var Service;
+      if ( /\.js$/.test(service) ) {
 
-      list.forEach(function (dep) {
-        if ( dep.slug === service ) {
-          Service = dep;
-        }
-      });
-
-      if ( ! Service ) {
-        throw new Error('No such service: ' + service);
       }
+      
+      else {
+        var list = $('../list.json');
 
-      var options = Service.start['arguments-style'] || [];
+        var Service;
 
-      for ( var i = 4, bits; i < process.argv.length; i ++ ) {
-        if ( $('util').isArray(options) ) {
-          options.push(process.argv[i]);
+        list.forEach(function (dep) {
+          if ( dep.slug === service ) {
+            Service = dep;
+          }
+        });
+
+        if ( ! Service ) {
+          throw new Error('No such service: ' + service);
         }
-        else {
-          bits = process.argv[i].split('=');
-          options[bits[0]] = bits[1];
+
+        options = Service.start['arguments-style'] || [];
+
+        for ( var i = 4, bits; i < process.argv.length; i ++ ) {
+          if ( $('util').isArray(options) ) {
+            options.push(process.argv[i]);
+          }
+          else {
+            bits = process.argv[i].split('=');
+            options[bits[0]] = bits[1];
+          }
         }
       }
 
       $('../lib/start')(service, options || '{}', domain.intercept(function (status) {
-        console.log('started', status);
+        console.log('started'.green, status);
       }));
     });
 
