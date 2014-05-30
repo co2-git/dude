@@ -139,7 +139,7 @@ domain.run(function () {
         }
       }
 
-      $('../lib/start-service')(service, options || '{}', domain.intercept(function (status) {
+      $('../lib/start')(service, options || '{}', domain.intercept(function (status) {
         console.log('started', status);
       }));
     });

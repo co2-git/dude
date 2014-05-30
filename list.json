@@ -41,7 +41,8 @@
     "install": {
       "0.0.0": {
         "source": "https://github.com/co2-git/dude-test-service/archive/v{{dependency.version}}.tar.gz",
-        "extension": "tar.gz"
+        "extension": "tar.gz",
+        "filename": "dude-test-service-{{dependency.version}}"
       }
     },
     "start": {

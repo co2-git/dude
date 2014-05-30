@@ -277,6 +277,50 @@ domain.run(function () {
             $('async').parallel(parallelChecks, callback);
           });
         }
+      },
+
+
+
+      'Verifying running services': {
+        'Starting dude-test-service': function (callback) {
+          $('../lib/start')('dude-test-service', {}, function (error, runner) {
+            if ( error ) {
+              return callback(error);
+            }
+
+            if ( typeof runner !== 'object' || runner.constructor !== Object ) {
+              return callback(new Error('Runner must be an object'));
+            }
+
+            // verify we have a pid
+            if ( typeof runner.pid !== 'number' ) {
+              return callback(new Error('Missing runner PID'));
+            }
+
+            // verify pid is running
+            process.kill(runner.pid, 0);
+
+            // verify we have a log
+            if ( typeof runner.id !== 'string' ) {
+              return callback(new Error('Missing runner id'));
+            }
+
+            // some functions to run in parallel
+            var parallels = [];
+
+            // verify the log file exits
+            parallels.push(function (then) {
+              $('fs').stat($('path').join(dir, 'dude-js', 'log', runner.id), then);
+            });
+
+            // verify the service file exits
+            parallels.push(function (then) {
+              $('fs').stat($('path').join(dir, 'dude-js', 'services', runner.id + '.json'), then);
+            });
+
+            $('async').parallel(parallels, callback);
+          });
+        }
       }
     }, domain.intercept(function () {
       $('fs').rmdir(dir, domain.intercept(function () {}));
