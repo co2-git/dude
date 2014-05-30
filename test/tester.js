@@ -1,4 +1,4 @@
-module.exports = function (tests, done) {
+module.exports = function (tests, options) {
   var $ = require;
 
   $('colors');
@@ -25,7 +25,7 @@ module.exports = function (tests, done) {
 
   // When exiting, make sure all tests (especially asynchronous ones) have been run
   process.on('exit', function () {
-    if ( total !== Total ) {
+    if ( total < Total ) {
       console.log(('Not all tests have been run! Missing ' + (Total - total).toString()).red.bold);
       process.exit(2);
     }
@@ -36,12 +36,7 @@ module.exports = function (tests, done) {
 
   // catch domain errors
   domain.on('error', function (error) {
-    console.log('error'.red, error.stack.yellow);
-    throw error;
-    // console.log('error'.red, error);
-    if ( ok + ko !== total || ! total ) {
-      throw error;
-    }
+    console.log('warning'.red, error.stack.yellow);
   });
   
   // Run code inside domain
@@ -67,46 +62,57 @@ module.exports = function (tests, done) {
         // The tests to run in parallel for the section
         var parallels = [];
 
+        // For each test in section, add to parallels
         for ( var test in tests[this.section] ) {
-          parallels.push(function (then) {
+          parallels.push(function (cb) {
 
-            this.test(function (error, result) {
+            this.test(domain.bind(function (error, result) {
               total ++;
 
+              var hasError = false;
+
               if ( error ) {
+                if ( options && typeof options.ignoreErrors === 'object' ) {
+                  hasError = ! ((this.section + '.' + this.title) in options.ignoreErrors);
+                }
+              }
+
+              if ( hasError ) {
                 ko ++;
                 console.log(('   ❌ ' + this.title).red.bold);
                 console.log(error.stack.red);
-                return then(error);
+                return cb(error);
               }
               ok ++;
               console.log(('   ✔ ' + this.title).green);
-              then(null, result);
+              cb(null, result);
             
             }.bind({
-              title: this.describe
-            }));
+              title: this.describe,
+              section: this.section
+            })));
 
           }.bind({
             describe: test,
-            test: tests[this.section][test]
+            test: tests[this.section][test],
+            section: this.section
           }));
         }
 
-        $('async').parallel(parallels, function (error, results) {
+        $('async').parallel(parallels, domain.bind(function (error, results) {
           if ( error ) {
             return then(error);
           }
 
           return then(null, results);
-        });
+        }));
 
       }.bind({
         section: section
       });
     }
 
-    $('async').series(series, function (error, results) {
+    $('async').series(series, domain.bind(function (error, results) {
       if ( error ) {
         console.log('error', error);
       }
@@ -114,7 +120,9 @@ module.exports = function (tests, done) {
       console.log();
       console.log((total + ' tests').blue, (ok + ' OK').green, (ko + ' KO').red);
 
-      done(error);
+      if ( options && typeof options.done === 'function' ) {
+        options.done(error);
+      }
 
       if ( ko ) {
         process.exit(1);
@@ -122,6 +130,6 @@ module.exports = function (tests, done) {
       else {
         process.exit();
       }
-    });
+    }));
   });
 };

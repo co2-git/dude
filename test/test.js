@@ -4,6 +4,8 @@ $('colors');
 
 var domain = $('domain').create();
 
+var started;
+
 domain.on('error', function (error) {
   console.log('dudejs: test failed!'.red.bold, error);
 });
@@ -56,6 +58,8 @@ domain.run(function () {
             $('async').parallel(parallelChecks, callback);
           });
         },
+
+
 
 
 
@@ -318,13 +322,90 @@ domain.run(function () {
               $('fs').stat($('path').join(dir, 'dude-js', 'services', runner.id + '.json'), then);
             });
 
-            $('async').parallel(parallels, callback);
+            $('async').parallel(parallels, function (error) {
+              if ( error ) {
+                return callback(error);
+              }
+              started = true;
+              callback();
+            });
+          });
+        }
+      },
+
+
+
+
+
+      'Verifying stopping services': {
+        'Stopping dude-test-service': function (callback) {
+          // get runner information
+
+          $('../lib/running')(function (error, list) {
+            if ( error ) {
+              return callback(error);
+            }
+
+            var service;
+
+            list.forEach(function (item) {
+              if ( item.service  === 'dude-test-service' ) {
+                service = item;
+              }
+            });
+
+            if ( ! service ) {
+              throw new Error('Could not stop! Entity not found: dude-test-service');
+            }
+
+            $('../lib/stop')(service.log, function (error) {
+              if ( error ) {
+                return callback(error);
+              }
+
+              // give it some rest
+              setTimeout(function () {
+                // verify pid is dead
+                var isDead = false;
+
+                try {
+                  process.kill(service.pid, 0);
+                }
+                catch ( error ) {
+                  isDead = true;
+                }
+
+                if ( ! isDead ) {
+                  return callback(new Error('PID was not dead'));
+                }
+
+                // Check that service has been cleaned
+                $('fs').stat($('path').join(dir, 'dude-js', 'services', service.log + '.json'),
+                  function (error, stat) {
+                    if ( ! error ) {
+                      return callback(new Error('Service file has not been cleaned'));
+                    }
+                    callback();
+                  });
+              }, 1000 * 2);
+            });
           });
         }
       }
-    }, domain.intercept(function () {
-      $('fs').rmdir(dir, domain.intercept(function () {}));
-    }));
+
+
+
+    },
+
+    {
+      done: function (error) {
+        $('fs-extra').removeSync(dir);
+      },
+
+      ignoreErrors: {
+        'Verifying running services.Starting dude-test-service': true
+      }
+    });
 
   }));
 });
