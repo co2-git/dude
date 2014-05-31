@@ -10,5 +10,5 @@ var server = http.createServer(function (req, res) {
 });
 
 server.listen(process.env.PORT || 3030, function () {
-  console.log('server listening on port', (process.env.PORT || 3030));
+  process.send({ listening: (process.env.PORT || 3030) });
 });

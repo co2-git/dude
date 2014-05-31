@@ -18,9 +18,9 @@ var forkNumber = options.forks || $('os').cpus().length;
 
 var reloadSignal = options.reloadSignal || 'SIGUSR2';
 
-// process.on('exit', function (signal) {
-
-// });
+process.on('exit', function (signal) {
+  console.log('exiting with signal', signal);
+});
 
 process.on(reloadSignal, function () {
   console.log('restarting');
