@@ -176,11 +176,28 @@ domain.run(function () {
 
 
   program
-    .command('stop <service>')
+    .command('stop [<service>]')
     .description('Stop a service or a script')
     .action(function (service) {
-      $('../lib/stop')(service, domain.intercept(function (message) {
-        console.log((service + ' has been stopped').green);
+      if ( ! service ) {
+        service = true;
+      }
+      $('../lib/stop')(service, domain.intercept(function (stopped) {
+        if ( service === true && ! stopped.length ) {
+          return console.log('Nothing is running so nothing was stooped'.yellow);
+        }
+        stopped.forEach(function (s) {
+          console.log(((s.service || s.script) + ' has been stopped').green, ('pid ' + s.pid + ' ID ' + s.log).grey);
+        });
+      }));
+    });
+
+  program
+    .command('reload <script>')
+    .description('Reload a script')
+    .action(function (script) {
+      $('../lib/reload')(script, domain.intercept(function (message) {
+        console.log((script + ' has been reloaded').green);
       }));
     });
 

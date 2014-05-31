@@ -18,6 +18,8 @@ var forkNumber = options.forks || $('os').cpus().length;
 
 var reloadSignal = options.reloadSignal || 'SIGUSR2';
 
+var reloaded = 0;
+
 process.on('exit', function (signal) {
   console.log('exiting with signal', signal);
 });
@@ -27,15 +29,22 @@ process.on(reloadSignal, function () {
 
   var reloaders = [];
 
-  for ( var i = 0; i < forkNumber; i ++ ) {
+  Object.keys(cluster.workers).forEach(function (workerID) {
     reloaders.push(function (callback) {
-      forkMaster(callback);
-    });
-  }
+      this.kill();
+      forkMe(callback);
+    }.bind(cluster.workers[workerID]));
+  });
 
-  $('async').series(reloaders, domain.intercept(function () {
-    console.log('restarted');
-  }));
+  $('async').series(reloaders, function (error) {
+    if ( error ) {
+      throw error;
+    }
+    
+    reloaded ++;
+
+    console.log('restarted ' + reloaded + ' times');
+  });
 });
 
 var cluster = $('cluster');
@@ -80,7 +89,13 @@ function forkMe (then) {
 
   fork.on('message', function (message) {
     console.log(message);
-  });
+
+    switch ( message ) {
+      case 'how many reloads?':
+        this.send({ reloaded: reloaded });
+        break;
+    }
+  }.bind(fork));
 
   fork.on('exit', function (code, signal) {
     console.log({ exit: (code || signal), fork: fork });
