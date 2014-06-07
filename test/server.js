@@ -6,6 +6,8 @@ var http = $('http');
 
 var reloaded = 0;
 
+var view = 0;
+
 process.on('message', function (message) {
   if ( 'reloaded' in message ) {
     reloaded = message.reloaded;
@@ -20,6 +22,10 @@ var server = http.createServer(function (req, res) {
   res.write('I am a forked server with pid ' + process.pid +"\r\n");
   
   res.end('DudeJS test server | Reloaded ' + reloaded + ' time(s) ~~~');
+
+  view ++;
+
+  process.send({ 'page view': view });
 });
 
 server.listen(process.env.PORT || 3030, function () {

@@ -69,20 +69,13 @@ module.exports = function (tests, options) {
             this.test(domain.bind(function (error, result) {
               total ++;
 
-              var hasError = false;
-
               if ( error ) {
-                if ( options && typeof options.ignoreErrors === 'object' ) {
-                  hasError = ! ((this.section + '.' + this.title) in options.ignoreErrors);
-                }
-              }
-
-              if ( hasError ) {
                 ko ++;
                 console.log(('   ❌ ' + this.title).red.bold);
                 console.log(error.stack.red);
                 return cb(error);
               }
+              
               ok ++;
               console.log(('   ✔ ' + this.title).green);
               cb(null, result);
