@@ -236,6 +236,29 @@ domain.run(function () {
         }
 
         var config = $('../lib/config');
+
+        if ( typeof config[verb] !== 'function' ) {
+          throw new Error('No such verb: ' +verb);
+        }
+
+        var args = [];
+
+        for ( var key in arguments ) {
+          if ( +key ) {
+            args.push(arguments[key]);
+          }
+        }
+
+        args.push(function (error) {
+          if ( error ) {
+            throw error;
+          }
+          if ( verb === 'set' ) {
+            console.log('Config updated ok'.green, arguments[1]);
+          }
+        });
+
+        config[verb].apply(null, args);
       })
 
     .exec();
