@@ -261,5 +261,20 @@ domain.run(function () {
         config[verb].apply(null, args);
       })
 
+    .action('build')
+      .about('Perform build operations')
+      .usage('Build sass files', [
+          {
+            name: 'sass',
+            required: true,
+            type: 'keyword'
+          }
+        ])
+      .run(function (techno) {
+        $('../lib/build/' + techno)(function (error, data) {
+          console.log(arguments);
+        });
+      })
+
     .exec();
 });
