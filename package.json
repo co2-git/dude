@@ -25,6 +25,7 @@
     "moment": "2.6.0",
     "semver": "2.3.0",
     "fs-extra": "0.9.1",
-    "node-sass": "~0.9.2"
+    "node-sass": "0.9.2",
+    "browserify": "4.1.9"
   }
 }

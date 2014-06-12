@@ -73,14 +73,10 @@
       }
     },
     "start": {
-      "2.6.1": {
-        "script": "bin/mongod",
+      "2.8.11": {
+        "script": "src/redis-server",
         "arguments-style": {},
         "arguments": {
-          "dbpath": {
-            "about": "Path to the database",
-            "required": false
-          },
           "port": {
             "about": "Port to listen to",
             "required": false
