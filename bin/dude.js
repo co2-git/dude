@@ -9,8 +9,6 @@ domain.on('error', function (error) {
 });
 
 domain.run(function () {
-  $('colors');
-
   var program = $('../lib/program');
 
   program
@@ -74,23 +72,7 @@ domain.run(function () {
     .action('install')
       .about('Install a new dependency')
       .run(function (dependency) {
-        var list = $('../list.json');
-
-        var Dependency;
-
-        list.forEach(function (dep) {
-          if ( dep.slug === dependency ) {
-            Dependency = dep;
-          }
-        });
-
-        if ( ! Dependency ) {
-          return console.log('No such dependency'.red, ('Dependency not found: ' + dependency).yellow);
-        }
-
-        var version = Dependency.latest;
-
-        $('../lib/install')(dependency, version, domain.intercept(function (version, dir) {
+        $('../lib/install')(dependency, null, domain.intercept(function (version, dir) {
           console.log(('  Successfully installed ' + dependency.bold + ' version ' + version.bold).green);
         }));
       })
