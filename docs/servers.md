@@ -16,8 +16,18 @@ dude ships with a manager for your HTTP/TCP servers. It uses node clusters so yo
 
 ## Specify the number of workers
 
-	dudejs start server.js --fork 2
+	$ dudejs start server.js --fork 2
+
+	dudejs.start('server.js', { fork: 2 });
 
 ## Callback on worker died
 
-	dudejs start server.js --on
+	$ dudejs start server.js --rescue rescue.js
+
+	dudejs.start('server.js', { rescue: 'rescue.js' });
+
+	// or you can pass a function
+
+	dudejs.start('server.js', { rescue: function (code, signal, error, worker) {
+
+	}});
