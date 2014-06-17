@@ -31,6 +31,8 @@ When invoking `build`, it will look in `dude.json` for the label `build`. For ex
 
 You can now invoke build to build the files.
 
+Not that source can be a string or an array.
+
 ## API Usage
 
     dudejs.build([String techno, Object options, Function callback]);
@@ -42,6 +44,10 @@ You can now invoke build to build the files.
 ## Invoke from API
 
     dudejs.build();
+
+## Print available technologies
+
+    dudejs build --print
 
 ## Restrict the build to only one technology
 
@@ -86,3 +92,50 @@ You can have automatic builts - files are being watched and are automatically bu
 
     // API
     dudejs.config.unset('build', technology, { source: source, dest: dest });
+
+## View build rules
+
+    # CLI
+    dudejs config get build [<technology>]
+
+    // API
+    dudejs.config.get('build');
+    dudejs.config.get('build', technology);
+
+## Technology specify
+
+You can view what are the specifics of each technology
+
+    # CLI
+    dudejs help build-specifics <techno>
+
+    // API
+    dudejs.help('build-specifics', techno);
+
+For example:
+
+    # CLI
+    $ dudejs help build-specifics sass
+    --source String or Array [Required]
+    --dest String [Required]
+    --output-style [compressed] [Optional]
+
+    // API
+    dudejs.help('build-specifics', 'sass');
+    {
+        "source": {
+            "type": ["String", "Array"],
+            "required": true
+        },
+
+
+        "dest": {
+            "type": "String",
+            "required": true
+        },
+
+        "output-style": {
+            "type": { "String": ["compressed"] },
+            "required": false
+        }
+    }
