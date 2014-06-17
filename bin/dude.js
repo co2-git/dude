@@ -253,7 +253,7 @@ domain.run(function () {
           }
         ])
       .run(function (techno) {
-        $('../lib/build/' + techno)(function (error, data) {
+        $('../lib/build')(techno, {}, function (error, data) {
           console.log(arguments);
         });
       })
