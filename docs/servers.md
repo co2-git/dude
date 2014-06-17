@@ -1,44 +1,23 @@
-# Program
+# Servers
 
-dude ships with a CLI helper when you do Node modules that can be run on the terminal.
+dude ships with a manager for your HTTP/TCP servers. It uses node clusters so you can reload your servers with zero second downtime.
 
-## Usage
+## CLI Usage
 
-	var program = require('dude.js').program;
+	dudejs start server.js
+	dudejs reload server.js
+	dudejs stop server.js
 
-	program
-		
-		.dirname(require('path').dirname(__dirname)) // the base directory of your app
-		
-		.action('do-something')
-			
-			.about('a very cool action')
-			
-			.run(function () {
-				console.log('cool!');
-			})
+## API usage
 
-		.action('do-something-else')
+	dudejs.start('server.js');
+	dudejs.reload('server.js');
+	dudejs.stop('server.js');
 
-			.about('another cool action')
+## Specify the number of workers
 
-			.run(function () {})
+	dudejs start server.js --fork 2
 
-		.exec();
+## Callback on worker died
 
-Then call your CLI:
-
-	$ node bin/cli.js do-something
-	cool!
-
-## API
-
-### dirname(String path)
-
-### action(String name)
-
-### about(String description)
-
-### usage(String name, Array arguments)
-
-### run(Function action)
+	dudejs start server.js --on
