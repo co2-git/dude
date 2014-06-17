@@ -13,7 +13,7 @@ domain.run(function () {
 
   program
 
-    .package($('../package.json'))
+    .dirname($('path').dirname(__dirname))
     
     .action('init')
       .about('install necessary folder for dude-js in current directory')
@@ -252,7 +252,10 @@ domain.run(function () {
             type: 'keyword'
           }
         ])
-      .run(function (techno) {
+      .run(function (techno, options) {
+
+
+
         $('../lib/build')(techno, {}, function (error, data) {
           console.log(arguments);
         });
