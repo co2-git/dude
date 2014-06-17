@@ -139,3 +139,15 @@ For example:
             "required": false
         }
     }
+
+## Apply specifics
+
+    # CLI
+    dudejs config set build sass --source <source> --dest <dest> --output-style compressed
+
+    // API
+    dudejs.config.set('build', 'sass', {
+        source: source,
+        dest: dest,
+        "output-style": "compressed"
+    });
