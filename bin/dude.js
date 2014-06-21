@@ -212,16 +212,23 @@ domain.run(function () {
             type: 'value'
           }
         ])
+      .usage('Get all config rules', [
+        {
+            name: 'get',
+            required: true,
+            type: 'keyword'
+          }
+        ])
       .run(function (verb, action) {
         if ( typeof verb !== 'string' ) {
           throw new Error('Verb must be an action');
         }
 
-        var config = $('../lib/config');
-
-        if ( typeof config[verb] !== 'function' ) {
-          throw new Error('No such verb: ' +verb);
+        if ( verb === 'get' ) {
+          return console.log(JSON.stringify($($('path').join(process.cwd(), 'dude.json')), null, 2));
         }
+
+        var config = $('../lib/config');
 
         var args = [];
 
@@ -235,9 +242,7 @@ domain.run(function () {
           if ( error ) {
             throw error;
           }
-          if ( verb === 'set' ) {
-            console.log('Config updated ok'.green, arguments[1]);
-          }
+          console.log('Config updated ok'.green, arguments[1]);
         });
 
         config[verb].apply(null, args);
