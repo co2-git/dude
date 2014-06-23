@@ -250,20 +250,61 @@ domain.run(function () {
 
     .action('build')
       .about('Perform build operations')
-      .usage('Build sass files', [
-          {
-            name: 'sass',
-            required: true,
-            type: 'keyword'
+      .arguments([
+        {
+          name: 'techno',
+          about: 'The build technology',
+          required: false,
+          in: ['sass', 'browserify', 'uglify']
+        },
+
+        {
+          name: 'auto',
+          about: 'Whether or not use auto build',
+          required: false,
+          is: '--auto',
+          render: { auto: true }
+        }
+      ])
+      .usage('Build all from dude.json', [])
+      .usage('Build all from dude.json in auto-way', [
+        {
+          name: 'auto',
+          type: 'single-option',
+          required: true
+        }
+      ])
+      .usage('Build only from one techno', [
+        {
+          name: 'techno',
+          type: 'value',
+          required: true
+        }
+      ])
+      .run(function () {
+
+        var techno;
+        var options =  {};
+        
+        for ( var arg in arguments ) {
+          if ( /^\-\-/.test(arguments[arg]) ) {
+            if ( arguments[arg] === '--auto' ) {
+              options.auto = true;
+            }
+
+            if ( arguments[arg] === '--bg' ) {
+              options.background = true;
+            }
           }
-        ])
-      .run(function (techno, options) {
+          else if ( + arg === 0 ) {
+            techno = arguments[arg];
+          }
+        }
 
-
-
-        $('../lib/build')(techno, {}, function (error, data) {
-          console.log(arguments);
-        });
+        $('../lib/build')(techno, options || {},
+          domain.intercept(function (built) {
+            console.log('Built'.green, built);
+          }));
       })
 
     .exec();

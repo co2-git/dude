@@ -15,7 +15,7 @@ Dudejs ships with a CLI so you can access it via terminal
 
 # API
 
-    var dudejs = require('dudejs');
+    var dude = require('dude.js');
 
 # Server manager
 
@@ -43,7 +43,7 @@ All builds can be automated on watching file changes.
 
 # Dependency manager
 
-Dudejs ships with a dependency manager so you install/update/remove low-level dependencies. Dependencies supported:
+Dudejs ships with a dependency manager so you install/update/remove low-level dependencies per-project and directory based. Dependencies supported:
 
 - MongoDB
 - Redis
