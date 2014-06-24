@@ -180,7 +180,7 @@ domain.run(function () {
         }
         $('../lib/stop')(service, options, domain.intercept(function (stopped) {
           if ( service === true && ! stopped.length ) {
-            return console.log('Nothing is running so nothing was stooped'.yellow);
+            return console.log('Nothing is running so nothing to stop'.yellow);
           }
           stopped.forEach(function (s) {
             console.log(((s.service || s.script) + ' has been stopped').green, ('pid ' + s.pid + ' ID ' + s.log).grey);
