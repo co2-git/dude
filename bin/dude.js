@@ -143,11 +143,42 @@ domain.run(function () {
 
     .action('stop')
       .about('Stop a service or a script')
+      .usage('Stop a service by its log id', [
+        {
+          name: 'logID',
+          type: 'value',
+          required: true
+        }
+      ])
+      .usage('Stop a service by its service/script name', [
+        {
+          name: 'name',
+          type: 'value',
+          required: true
+        }
+      ])
+      .usage('Stop all running services/script', [])
+      .usage('Specify a signal other than SIGTERM', [
+        {
+          name: 'signal',
+          type: 'option',
+          required: true
+        }
+      ])
       .run(function (service) {
+        var options = {};
         if ( ! service ) {
           service = true;
         }
-        $('../lib/stop')(service, domain.intercept(function (stopped) {
+        for ( var i in arguments ) {
+          if ( arguments[i] === '--signal' ) {
+            options.signal = arguments[(+i + 1)];
+          }
+        }
+        if ( /^\-\-/.test(service) ) {
+          service = true;
+        }
+        $('../lib/stop')(service, options, domain.intercept(function (stopped) {
           if ( service === true && ! stopped.length ) {
             return console.log('Nothing is running so nothing was stooped'.yellow);
           }
