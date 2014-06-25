@@ -79,6 +79,26 @@ domain.run(function () {
 
     .action('start')
       .about('start a service or a script')
+      .usage('Start a service', [
+        {
+          name: 'service',
+          type: 'value',
+          required: true
+        }
+      ])
+      .usage('Start a script', [
+        {
+          name: 'script',
+          type: 'value',
+          required: true
+        },
+
+        {
+          name: 'forks',
+          type: 'option',
+          required: false
+        }
+      ])
       .run(function (service) {
         var options = {};
 
