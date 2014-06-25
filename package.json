@@ -7,7 +7,7 @@
     "test": "node test/test"
   },
   "bin": {
-    "dude": "bin/dude.js"
+    "dudejs": "bin/dude.js"
   },
   "repository": {
     "type": "git",

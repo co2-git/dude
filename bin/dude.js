@@ -338,5 +338,12 @@ domain.run(function () {
           }));
       })
 
+    .action('monitor')
+      .about('Monitor running services/scripts')
+      .usage('Monitor all running services/scripts', [])
+      .run(function () {
+        $('../lib/monitor')();
+      })
+
     .exec();
 });

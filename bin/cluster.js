@@ -13,6 +13,18 @@ var unique = process.argv[3];
 var stream = $('fs').createWriteStream($('path').join(process.cwd(), 'dude-js', 'log', unique),
   { encoding: 'utf-8', flags: 'a+' });
 
+$('../lib/json-prune');
+
+function log (msg) {
+  stream.write(JSON.prune({
+    when: +new Date(),
+    user: process.getuid(),
+    host: $('os').hostname(),
+    process: process.pid,
+    message: msg
+  }) + ",\r\n");
+}
+
 var options = {};
 
 if ( process.argv[4] ) {
@@ -26,11 +38,11 @@ var reloadSignal = options.reloadSignal || 'SIGUSR2';
 var reloaded = 0;
 
 process.on('exit', function (signal) {
-  stream.write($('util').inspect({ exit: { process: process.pid, signal: signal } }) + "\r\n");
+  log({ event: 'exit', signal: signal });
 });
 
 process.on(reloadSignal, function () {
-  stream.write('restarting' + "\r\n");
+  log({ event: 'reloading', signal: reloadSignal });
 
   reloaded ++;
 
@@ -48,7 +60,7 @@ process.on(reloadSignal, function () {
       throw error;
     }
 
-    stream.write('restarted ' + reloaded + ' times' + "\r\n");
+    log({ event: 'reloaded', reloaded: reloaded });
   });
 });
 
@@ -62,26 +74,26 @@ cluster.setupMaster({
 cluster
   
   .on('error', function (error) {
-    stream.write($('util').inspect({ error: error }) + "\r\n");
+    log({ event: 'error', error: error });
   })
   
   .on('fork', function (fork) {
-    stream.write($('util').inspect({ forked: fork }) + "\r\n");
+    log({ event: 'fork', emitter: 'cluster', fork: getForkPrintableInfo (fork) });
   })
 
   .on('exit', function (fork, code, signal) {
-    stream.write($('util').inspect({ exit: (code || signal), fork: fork }) + "\r\n");
+    log({ event: 'exit', emitter: 'cluster', fork: getForkPrintableInfo (fork), code: code, signal: signal });
   })
   
   .on('listening', function (fork) {
-    stream.write($('util').inspect({ listening: fork }) + "\r\n");
+    log({ event: 'listening', emitter: 'cluster', fork: getForkPrintableInfo (fork) });
   });
 
 function forkMe (then) {
   var fork = cluster.fork();
 
   fork.on('listening', function () {
-    stream.write($('util').inspect({ listening: fork }) + "\r\n");
+    log({ event: 'fork', emitter: 'fork', fork: getForkPrintableInfo (fork) });
 
     if ( typeof then === 'function' ) {
       then();
@@ -89,7 +101,7 @@ function forkMe (then) {
   });
 
   fork.on('message', function (message) {
-    stream.write($('util').inspect(message) + "\r\n");
+    log(message);
 
     switch ( message ) {
       case 'how many reloads?':
@@ -99,10 +111,26 @@ function forkMe (then) {
   }.bind(fork));
 
   fork.on('exit', function (code, signal) {
-    stream.write($('util').inspect({ exit: (code || signal), fork: fork }) + "\r\n");
+    log({ event: 'exit', emitter: 'fork', code: code, signal: signal, fork: getForkPrintableInfo (fork) });
   });
 }
 
 for ( var i = 0, fork; i < forkNumber; i ++ ) {
   forkMe();
+}
+
+function getForkPrintableInfo (fork) {
+  return {
+    id: fork.id,
+    uniqueID: fork.uniqueID,
+    workerID: fork.workerID,
+    state: fork.state,
+    process: {
+      connected: fork.process.connected,
+      signalCode: fork.process.signalCode,
+      exitCode: fork.process.exitCode,
+      killed: fork.process.killed,
+      pid: fork.process.pid
+    }
+  };
 }
