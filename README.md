@@ -19,7 +19,7 @@ Dudejs ships with a CLI so you can access it via terminal
 
 # Server manager
 
-Dudejs ships with a server manager so you can easily start/stop/reload your server scripts. It uses NodeJS built-in cluster.
+Dudejs ships with a server manager so you can easily start/stop/reload your server scripts written in NodeJS. It uses NodeJS built-in cluster.
 
     # CLI
     dudejs start server.js
@@ -30,6 +30,8 @@ Dudejs ships with a server manager so you can easily start/stop/reload your serv
     dude.start('server.js');
     dude.reload('server.js');
     dude.stop('server.js');
+
+For more info, check out the docs at `docs/servers.md`.
 
 # Build tools
 
