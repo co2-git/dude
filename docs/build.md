@@ -41,6 +41,9 @@ Not that source can be a string or an array.
 
     dudejs build
 
+    # To get more info:
+    dudejs usage build
+
 ## Invoke from API
 
     dudejs.build();
@@ -48,6 +51,8 @@ Not that source can be a string or an array.
 ## Print available technologies
 
     dudejs build --print
+
+You will get a list of the available build technologies and the options they support.
 
 ## Restrict the build to only one technology
 
@@ -59,14 +64,6 @@ Not that source can be a string or an array.
 
     dudejs.build('sass');
 
-## Restrict the build to some technologies
-
-    # command line
-    dudejs build sass browserify
-
-    // API
-    dudejs.build(['sass', 'browserify']);
-
 ## Watchers
 
 You can have automatic builts - files are being watched and are automatically built when changed.
@@ -76,6 +73,8 @@ You can have automatic builts - files are being watched and are automatically bu
 
     // API
     dudejs.build({ auto: true });
+
+Call `dudejs build --print` to see which technologies support auto.
 
 ## Add a new build
 
@@ -88,10 +87,10 @@ You can have automatic builts - files are being watched and are automatically bu
 ## Remove a build
 
     # CLI
-    dudejs config unset build <technology> --source <source> --dest <dest>
+    dudejs config unset build <technology> --source <source,...> --dest <dest>
 
     // API
-    dudejs.config.unset('build', technology, { source: source, dest: dest });
+    dudejs.config.unset('build', technology, { source: source || [source,..], dest: dest });
 
 ## View build rules
 
@@ -101,44 +100,6 @@ You can have automatic builts - files are being watched and are automatically bu
     // API
     dudejs.config.get('build');
     dudejs.config.get('build', technology);
-
-## Technology specify
-
-You can view what are the specifics of each technology
-
-    # CLI
-    dudejs help build-specifics <techno>
-
-    // API
-    dudejs.help('build-specifics', techno);
-
-For example:
-
-    # CLI
-    $ dudejs help build-specifics sass
-    --source String or Array [Required]
-    --dest String [Required]
-    --output-style [compressed] [Optional]
-
-    // API
-    dudejs.help('build-specifics', 'sass');
-    {
-        "source": {
-            "type": ["String", "Array"],
-            "required": true
-        },
-
-
-        "dest": {
-            "type": "String",
-            "required": true
-        },
-
-        "output-style": {
-            "type": { "String": ["compressed"] },
-            "required": false
-        }
-    }
 
 ## Apply specifics
 

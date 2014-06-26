@@ -231,6 +231,13 @@ domain.run(function () {
 
     .action('config')
       .about('Set/Get dude.js configuration')
+      .usage('Get all config rules', [
+        {
+            name: 'get',
+            required: true,
+            type: 'keyword'
+          }
+        ])
       .usage('Set a new build rule', [
           {
             name: 'set',
@@ -248,28 +255,20 @@ domain.run(function () {
             type: 'value'
           },
           {
-            name: 'files',
+            name: 'source',
             required: true,
-            type: 'keyword'
+            type: 'option'
           },
           {
-            name: 'source-file',
+            name: 'dest',
             required: true,
-            type: 'value'
-          },
-          {
-            name: 'destination-file',
-            required: true,
-            type: 'value'
+            type: 'option'
           }
-        ])
-      .usage('Get all config rules', [
-        {
-            name: 'get',
-            required: true,
-            type: 'keyword'
-          }
-        ])
+        ], {
+          notes: [
+            'To specify more than one file as a source, separate files with coma, such as: `--source file1,file2,file3`'
+          ]
+        })
       .run(function (verb, action) {
         if ( typeof verb !== 'string' ) {
           throw new Error('Verb must be an action');
@@ -301,34 +300,25 @@ domain.run(function () {
 
     .action('build')
       .about('Perform build operations')
-      .arguments([
+      .usage('Perform all build from dude.json', [])
+      .usage('Get a list of all available technos', [
         {
-          name: 'techno',
-          about: 'The build technology',
-          required: false,
-          in: ['sass', 'browserify', 'uglify']
-        },
-
-        {
-          name: 'auto',
-          about: 'Whether or not use auto build',
-          required: false,
-          is: '--auto',
-          render: { auto: true }
-        }
-      ])
-      .usage('Build all from dude.json', [])
-      .usage('Build all from dude.json in auto-way', [
-        {
-          name: 'auto',
-          type: 'single-option',
+          name: '--print',
+          type: 'keyword',
           required: true
         }
       ])
-      .usage('Build only from one techno', [
+      .usage('Restrict build to only one techno', [
         {
           name: 'techno',
           type: 'value',
+          required: true
+        }
+      ])
+      .usage('Launch auto-build', [
+        {
+          name: '--auto',
+          type: 'keyword',
           required: true
         }
       ])

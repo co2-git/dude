@@ -7,15 +7,19 @@ dude.js is your sidekick for your NodeJS projects.
 
     npm install -g dudejs
 
+# API
+
+    var dude = require('dude.js');
+
 # CLI
 
 Dudejs ships with a CLI so you can access it via terminal
 
     dudejs
 
-# API
+This will show you all available actions. You can get more info about each action by typing:
 
-    var dude = require('dude.js');
+    dudejs usage <action>
 
 # Server manager
 
