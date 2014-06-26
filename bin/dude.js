@@ -343,8 +343,8 @@ domain.run(function () {
               options.auto = true;
             }
 
-            if ( arguments[arg] === '--bg' ) {
-              options.background = true;
+            if ( arguments[arg] === '--print' ) {
+              options.print = true;
             }
           }
           else if ( + arg === 0 ) {
