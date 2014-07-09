@@ -99,44 +99,73 @@ domain.run(function () {
           required: false
         }
       ])
-      .run(function (service) {
+      .run(function (/* String | Null */ service) {
         var options = {};
 
-        if ( /\.js$/.test(service) ) {
+        // @abstract    start a service or a script
 
+        function start (service, options) {
+          $('../lib/start')(service, options || '{}', domain.intercept(function (status) {
+            console.log('started'.green, status);
+          }));
         }
-        
-        else {
-          var list = $('../list.json');
 
-          var Service;
+        // @abstract    parse $process.argv
 
-          list.forEach(function (dep) {
-            if ( dep.slug === service ) {
-              Service = dep;
-            }
-          });
-
-          if ( ! Service ) {
-            throw new Error('No such service: ' + service);
-          }
-
-          options = Service.start['arguments-style'] || [];
-
+        function parseArgs (args) {
           for ( var i = 4, bits; i < process.argv.length; i ++ ) {
-            if ( $('util').isArray(options) ) {
-              options.push(process.argv[i]);
+            if ( $('util').isArray(args) ) {
+              args.push(process.argv[i]);
             }
             else {
               bits = process.argv[i].split('=');
-              options[bits[0]] = bits[1];
+              args[bits[0]] = bits[1];
             }
           }
         }
 
-        $('../lib/start')(service, options || '{}', domain.intercept(function (status) {
-          console.log('started'.green, status);
-        }));
+        // if @service is missing, assume OP wants to use a list of services to automatically start from dude.json
+        if ( ! service ) {
+          var dude = $($('path').join(process.cwd(), 'dude.json'));
+
+          if ( Array.isArray(dude.start) ) {
+            dude.start.forEach(function (starter) {
+              start(starter.service, starter.arguments);
+            });
+          }
+        }
+
+        // if @service is a text
+        else if ( typeof service === 'string' ) {
+          // if @service is a JavaScript file
+          if ( /\.js$/.test(service) ) {
+
+          }
+          
+          // if @service is a service name
+          else {
+            // use @service to fetch info about Service in list
+            var list = $('../list.json');
+
+
+            var Service;
+
+            // look for service
+            list.forEach(function (dep) {
+              if ( dep.slug === service ) {
+                Service = dep;
+              }
+            });
+
+            if ( ! Service ) {
+              throw new Error('No such service: ' + service);
+            }
+
+            options = Service.start['arguments-style'] || [];
+          }
+        
+          start(service, parseArgs(options));
+        }
       })
 
     .action('running')
