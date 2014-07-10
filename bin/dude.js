@@ -1,6 +1,10 @@
 #!/usr/bin/env node
 
+// an alias I like to use for faster coding
 var $ = require;
+
+// if app was installed via git, it is possible Installer did not run `npm install`
+// if ( ! )
 
 var domain = $('domain').create();
 
