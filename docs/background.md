@@ -1,22 +1,32 @@
+# background
+
+`background` enables you to run task in the background. We call these tasks `background workers`.
+
+## How it works
+
+It is a sub/pub system powered by redis. Subscribers can publish their tasks to the channel `background`. There is one (or many) background node process that is streaming live the channels and execute the tasks. There is one background node process that is saving the performed tasks to a database. If no database is specified, data are not saved and performed tasks are removed after some time.
+
 # Commands
 
 ## Enable background
 
-    dude init --bg [<options...>]
-    
-### Options
+This creates the folder `dude-bg` in the root directory of the duded project. You can skip that step if your worker files reside in a different location.
 
-#### --dir <workers-dir>
-
-Set the directory where workers script files are to be looked after
-
-    dude init --bg --dir my/folder
+    dude init --bg
     
 ## Start background daemon
+
+The sub/pub system
 
     dude start --bg [<options...>]
     
 ### Options
+
+#### --save <db-url>
+
+In case you want to save the channel messages, specify a connection link to connect to the database where to store the old channel messages.
+
+    dude start --bg --save mongodb://u:p@host:port/database/collection
 
 #### --dir <workers-dir>
 
