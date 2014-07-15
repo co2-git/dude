@@ -61,7 +61,7 @@ Set the directory where workers script files are to be looked after
     
 ## Add a new background worker
 
-    dude do <worker-script> [<options...>]
+    dude yo <worker> [<options...>]
 
 ### Options
 
@@ -69,21 +69,21 @@ Set the directory where workers script files are to be looked after
 
 Set execution time from now.
 
-    dude do something-cool --in '1 hour'
+    dude yo do-something-cool --in '1 hour'
     
 #### --every `every`
 
 Set worker frequency.
 
-    dude do something-cool --every day
-    dude do something-cool --every '4 hours'
+    dude yo do-something-cool --every day
+    dude yo do-something-cool --every '4 hours'
     
 #### --at `at`
 
 Set execution time.
 
-    dude do something-cool --at 2014-12-31H23:59:59TZ+1:00
-    dude do something-cool --at 'December 31st 2014 23:59:59'
+    dude yo do-something-cool --at 2014-12-31H23:59:59TZ+1:00
+    dude yo do-something-cool --at 'December 31st 2014 23:59:59'
     
 #### --priority <priority>
 
@@ -152,20 +152,24 @@ Put the following code in it:
     
 ## Check our worker
 
-    dude do-eval write-memory
+    dude yo eval write-memory
     cat memory.csv
     
 ## Start daemon and publish worker
 
     dude start --bg
-    dude do write-memory
-    dude bg
-    # [pending] write-memory
+    dude yo write-memory
+    dude yo
+    # [pending] write-memory [published 30 seconds ago]
+    sleep 5; dude yo
+    # [done] write-memory  [published 30 seconds ago] [done 8 seconds ago]
     cat memory.csv
+    dude yo forget write-memory
+    dude yo
     
 ## Execute worker in ten minutes
 
-    dude do write-memory --in '10 minutes'
+    dude yo write-memory --in '10 minutes'
 
     
     
