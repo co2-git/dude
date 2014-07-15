@@ -166,6 +166,7 @@ Put the following code in it:
     cat memory.csv
     dude yo forget write-memory
     dude yo
+    # [trash] write-memory  [published 1 minute ago] [done 58 seconds ago] [trashed 7 seconds ago]
     
 ## Execute worker in ten minutes
 
