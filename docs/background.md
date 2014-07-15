@@ -81,6 +81,8 @@ The file path to the worker's javascript file. You can omit the `.js` extension.
 The directory where workers file reside. By default, it looks for them in the folder `dude-bg` at the root directory of the current duded project -- unless specify otherwise with the option `--dir <workers-dir>`.
 
 # Tut
+
+In this quick tutorial, we are going to create a simple background worker that updates a file every minute and writes to it the amount of the memory used by Node in Mega Bytes at that moment.
     
 ## Create a new folder
 
@@ -97,3 +99,56 @@ The directory where workers file reside. By default, it looks for them in the fo
 
     dude install --save redis
     dude start redis
+    
+## Start daemon
+
+    dude start --bg
+    
+We can check our pending tasks
+
+    dude bg
+    
+As we can see, it is (rightfully) empty.
+    
+    
+## Create a background worker
+
+Create the worker file. We'll call him `write-memory`.
+
+    touch dude-bg/write-memory.js
+    
+Put the following code in it:
+
+    #!/usr/bin/env node
+    
+    var path = require('path');
+    
+    var file = path.join(process.env.dude_dir, 'memory.csv');
+    
+    var stream = require('fs').createWriteStream(file, { flags: 'a+', encoding: 'utf-8' });
+    
+    stream.write((process.memoryUsage().rss / 1000000).toString() + ',');
+    
+    stream.on('end', function () {
+      process.send('done');
+    });
+    
+## Check our worker
+
+    dude do-eval write-memory
+    cat memory.csv
+    
+## Start daemon and publish worker
+
+    dude start --bg
+    dude do write-memory
+    dude bg
+    # [pending] write-memory
+    cat memory.csv
+    
+## Execute worker in ten minutes
+
+    dude do write-memory --in '10 minutes'
+
+    
+    
