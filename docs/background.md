@@ -79,3 +79,21 @@ The file path to the worker's javascript file. You can omit the `.js` extension.
 ### `workers-dir`
 
 The directory where workers file reside. By default, it looks for them in the folder `dude-bg` at the root directory of the current duded project -- unless specify otherwise with the option `--dir <workers-dir>`.
+
+# Tut
+    
+## Create a new folder
+
+    mdkir dude-tut-bg/
+    cd dude-tut-bg/
+    npm init
+    
+## Install dude
+
+    npm install -g dude
+    dude init --bg
+    
+## Install and start redis
+
+    dude install --save redis
+    dude start redis
