@@ -1,6 +1,6 @@
 # background
 
-`background` enables you to run task in the background. We call these tasks `background workers`.
+`background` enables you to run tasks in the background. We call these tasks `background workers`.
 
 ## How it works
 
@@ -21,6 +21,23 @@ The sub/pub system
     dude start --bg [<options...>]
     
 ### Options
+
+#### --pub <db-url>
+
+The pubsub to connect to. If you use redis in default port, you don't neeed that.
+
+For redis:
+
+    dude start --bg --pub redis://u:p@host:port
+    
+For web sockets
+
+    dude start --bg --pub socket://u:p@host:port
+    
+For TCP sockets
+
+    dude start --bg --pub tcp://u:p@host:port
+
 
 #### --save <db-url>
 
