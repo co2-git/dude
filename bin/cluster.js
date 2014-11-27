@@ -72,19 +72,6 @@ for ( var i = 0; i < forkNumber; i ++ ) {
 }
 
 
-/*
-
-
-
-
-
-
-
-
-console.log(JSON.stringify({ message: { cluster: true } }));
-
-process.exit();*/
-
 
 
 
