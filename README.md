@@ -1,25 +1,23 @@
 dude
 ====
 
-dude.js is your sidekick for your NodeJS projects.
+dude starts a script in cluster mode and reloads the workers on-demand. dude is cool.
 
 # Install
 
-    npm install -g dudejs
+    npm install -g dude
 
 # API
 
-    var dude = require('dude.js');
+    var dude = require('dude');
 
 # CLI
 
-Dudejs ships with a CLI so you can access it via terminal
-
-    dudejs
+    dude
 
 This will show you all available actions. You can get more info about each action by typing:
 
-    dudejs usage <action>
+    dude usage <action>
 
 # Server manager
 

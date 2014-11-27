@@ -3,13 +3,20 @@
 // an alias I like to use for faster coding
 var $ = require;
 
+require('colors');
+
 // if app was installed via git, it is possible Installer did not run `npm install`
 // if ( ! )
 
 var domain = $('domain').create();
 
 domain.on('error', function (error) {
-  console.log('error'.red, error.stack.yellow);
+  try {
+    console.log('error'.red, error.stack.yellow);
+  }
+  catch ( err ) {
+    console.log(error);
+  }
 });
 
 domain.run(function () {
@@ -24,60 +31,6 @@ domain.run(function () {
       .run(function () {
         $('../lib/init')(domain.intercept(function () {
           console.log('dude.js init ok'.green);
-        }));
-      })
-
-    .action('available')
-      .about('List all available dude dependencies')
-      .run(function () {
-        var list = $('../list.json');
-
-        console.log();
-        console.log(('  dude.js | ' + list.length + ' available dependencies for download').bold.blue);
-        console.log();
-
-        list.forEach(function (dependency) {
-          console.log('  ' + dependency.name + ' ' + dependency.slug.cyan + '', '      ', dependency.about);
-        });
-
-        console.log();
-      })
-
-    .action('installed')
-      .about('List installed dude dependencies')
-      .run(function () {
-        var list;
-
-        try {
-          list = $($('path').join(process.env.PWD, 'dude.json'));
-        }
-        catch ( error ) {
-          return console.log('  Nothing installed yet!'.yellow);
-        }
-
-        if ( ! list.dependencies ) {
-          return console.log('  Nothing installed yet!'.yellow);
-        }
-
-        var depLength = Object.keys(list.dependencies).length;
-
-        console.log();
-        console.log(('  dude.js | ' + depLength + ' dependenc' +
-          ( depLength > 1 ? 'ies' : 'y' ) + ' installed').bold.blue);
-        console.log();
-
-        for ( var dep in list.dependencies ) {
-          console.log('  ' + dep + ' version ' + list.dependencies[dep]);
-        }
-
-        console.log();
-      })
-
-    .action('install')
-      .about('Install a new dependency')
-      .run(function (dependency) {
-        $('../lib/install')(dependency, null, domain.intercept(function (version, dir) {
-          console.log(('  Successfully installed ' + dependency.bold + ' version ' + version.bold).green);
         }));
       })
 
@@ -249,19 +202,6 @@ domain.run(function () {
         }));
       })
 
-    .action('bin')
-      .about('Shortcut access to the bin folder of a dependency')
-      .run(function (dependency, script) {
-        var args = process.argv.filter(function (arg, argi) {
-          if ( argi > 4 ) {
-            return true;
-          }
-        });
-        $('../lib/bin')(dependency, script, args || [], domain.intercept(function (bin) {
-          console.log(bin);
-        }));
-      })
-
     .action('config')
       .about('Set/Get dude.js configuration')
       .usage('Get all config rules', [
@@ -329,56 +269,6 @@ domain.run(function () {
         });
 
         config[verb].apply(null, args);
-      })
-
-    .action('build')
-      .about('Perform build operations')
-      .usage('Perform all build from dude.json', [])
-      .usage('Get a list of all available technos', [
-        {
-          name: '--print',
-          type: 'keyword',
-          required: true
-        }
-      ])
-      .usage('Restrict build to only one techno', [
-        {
-          name: 'techno',
-          type: 'value',
-          required: true
-        }
-      ])
-      .usage('Launch auto-build', [
-        {
-          name: '--auto',
-          type: 'keyword',
-          required: true
-        }
-      ])
-      .run(function () {
-
-        var techno;
-        var options =  {};
-        
-        for ( var arg in arguments ) {
-          if ( /^\-\-/.test(arguments[arg]) ) {
-            if ( arguments[arg] === '--auto' ) {
-              options.auto = true;
-            }
-
-            if ( arguments[arg] === '--print' ) {
-              options.print = true;
-            }
-          }
-          else if ( + arg === 0 ) {
-            techno = arguments[arg];
-          }
-        }
-
-        $('../lib/build')(techno, options || {},
-          domain.intercept(function (built) {
-            console.log('Built'.green, built);
-          }));
       })
 
     .action('monitor')
