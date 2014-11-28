@@ -1,25 +1,29 @@
-dude
-====
+workers.js
+==========
 
-dude starts a script in cluster mode and reloads the workers on-demand. dude is cool.
+Starts a script in cluster mode. Useful for reloading HTTP server with zero-second downtime. 
 
 # Install
 
-    npm install -g dude
+    npm install -g workers.js
 
 ## CLI
 
 ```bash
-dude start --fork 2 --reload-on SIG_INT server.js
-dude get-status server.js
-dude reload server.js
-dude stop server.js
+workers.js fork server.js
+workers.js status server.js
+workers.js reload server.js
+workers.js exit server.js
 ```
 
 ## API
  
  ```js
-dude.start('server.js');
-dude.reload('server.js');
-dude.stop('server.js');
+
+var workers = require('workers.js');
+
+workers.start('server.js');
+workers.status('server.js');
+workers.reload('server.js');
+workers.stop('server.js');
 ```
